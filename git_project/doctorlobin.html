@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Online Hospital Management</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ====== Navbar Styling ====== */
+    .navbar {
+      background: linear-gradient(90deg, #000000, #1a1a1a);
+      padding: 15px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.6);
+    }
+
+    .navbar .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .navbar ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar ul li {
+      position: relative;
+    }
+
+    .navbar ul li a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 16px;
+      display: block;
+      font-weight: 500;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .navbar ul li a:hover {
+      background: #fff;
+      color: #000;
+      border-radius: 5px;
+      transform: scale(1.05);
+    }
+
+    /* ===== Dropdown Menu ===== */
+    .navbar ul li ul {
+      position: absolute;
+      top: 45px;
+      left: 0;
+      background: #1a1a1a;
+      display: none;
+      flex-direction: column;
+      min-width: 180px;
+      border-radius: 5px;
+      overflow: hidden;
+      animation: fadeIn 0.3s ease-in-out;
+      z-index: 1000;
+    }
+
+    .navbar ul li:hover ul {
+      display: flex;
+    }
+
+    .navbar ul li ul li a {
+      padding: 10px;
+    }
+
+    .navbar ul li ul li a:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    /* ===== Animation ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Footer Styling ===== */
+    footer {
+      background: #000;
+      color: #fff;
+      padding: 40px 0 20px;
+      font-family: Arial, sans-serif;
+    }
+    .footer-container {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .footer-about, .footer-links, .footer-map, .footer-blog, .footer-awards {
+      flex: 1;
+      min-width: 220px;
+      margin: 10px 20px;
+    }
+    .footer-about h3, .footer-links h3, .footer-map h3, .footer-blog h3, .footer-awards h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .footer-about p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #ccc;
+    }
+    .footer-links ul, .footer-blog ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-links ul li, .footer-blog ul li {
+      margin-bottom: 10px;
+    }
+    .footer-links ul li a, .footer-blog ul li a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s ease, transform 0.3s ease;
+    }
+    .footer-links ul li a:hover, .footer-blog ul li a:hover {
+      color: #4CAF50;
+      transform: translateX(5px);
+    }
+    .footer-map iframe {
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      max-width: 100%;
+    }
+    .footer-awards .award-logos {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .footer-awards .award-logos img {
+      height: 50px;
+      width: auto;
+    }
+    .footer-social {
+      text-align: center;
+      margin-top: 20px;
+      padding: 20px 0;
+      border-top: 1px solid #444;
+    }
+    .footer-social h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .footer-social ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .footer-social ul li a {
+      font-size: 16px;
+      color: #ccc;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-social ul li a:hover {
+      color: #4CAF50;
+    }
+    .footer-bottom {
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px 0;
+      border-top: 1px solid #444;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Main content full width */
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      min-height: 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filters input, .filters select {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    /* Doctor cards grid */
+    .doctor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .doctor-card {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .doctor-card:hover {
+      transform: scale(1.03);
+    }
+
+    .doctor-card img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .status {
+      padding: 5px 10px;
+      border-radius: 20px;
+      color: white;
+      font-size: 12px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .available { background: green; }
+    .surgery { background: red; }
+    .leave { background: gray; }
+
+    .book-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #007bff;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Map */
+    .map-container {
+      margin-top: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Patient resources */
+    .resources {
+      margin-top: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Navigation Bar ===== -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">🏥 CityCare Hospital</div>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li>
+          <a href="dashboard.html">Dashboard</a>
+          <ul>
+            <li><a href="patient.html">Patient</a></li>
+            <li><a href="doctor.html">Doctor</a></li>
+            <li><a href="admin.html">Admin</a></li>
+          </ul>
+        </li>
+        <li><a href="userauthentication.html">User Authentication</a></li>
+        <li><a href="appointment.html">Appointment</a></li>
+        <li><a href="doctorlogin.html">Doctor Login</a></li>
+        <li><a href="online.html">Online Consultation</a></li>
+        <li><a href="billing.html">Billing & Payments</a></li>
+        <li><a href="pharmacy.html">Pharmacy Management</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a href="signup.html">Sign Up</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Filters -->
+    <div class="filters">
+      <input type="text" id="search" placeholder="Search doctor by name" />
+      <select id="specializationFilter">
+        <option value="">All Specializations</option>
+        <option value="Interventional Cardiologist">Interventional Cardiologist</option>
+        <option value="Child Neurologist">Child Neurologist</option>
+        <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+        <option value="Dermatologist">Dermatologist</option>
+        <option value="Radiologist">Radiologist</option>
+        <option value="General Physician">General Physician</option>
+      </select>
+      <select id="availabilityFilter">
+        <option value="">All Status</option>
+        <option value="Available Now">Available Now</option>
+        <option value="In Surgery">In Surgery</option>
+        <option value="On Leave">On Leave</option>
+      </select>
+    </div>
+
+    <!-- Doctor Grid -->
+    <div class="doctor-grid" id="doctorGrid">
+      <!-- Doctor cards will be inserted here -->
+    </div>
+
+    <!-- Map -->
+    <div class="map-container">
+      <h3>Hospital Map</h3>
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Hospital_Floor_Plan.svg/1024px-Hospital_Floor_Plan.svg.png"
+        alt="Hospital Map"
+        width="100%"
+      />
+    </div>
+
+    <!-- Resources -->
+    <div class="resources">
+      <h3>Patient Resources</h3>
+      <p><strong>Health Tips:</strong> Stay hydrated, eat balanced meals, and get regular checkups.</p>
+      <p><strong>FAQs:</strong> Visit the help desk for insurance, reports, and test booking queries.</p>
+      <p><strong>Emergency Contact:</strong> +91-9876543210</p>
+    </div>
+  </main>
+
+  <script>
+    const doctors = [];
+    const statuses = ["Available Now", "In Surgery", "On Leave"];
+    const depts = [
+      "Cardiology",
+      "Neurology",
+      "Pediatrics",
+      "Orthopedics",
+      "Dermatology",
+      "Radiology",
+      "General Medicine",
+    ];
+    const specs = [
+      "Interventional Cardiologist",
+      "Child Neurologist",
+      "Orthopedic Surgeon",
+      "Dermatologist",
+      "Radiologist",
+      "General Physician",
+    ];
+
+    for (let i = 1; i <= 30; i++) {
+      const dept = depts[i % depts.length];
+      const spec = specs[i % specs.length];
+      const status = statuses[i % statuses.length];
+      const block = `Block ${String.fromCharCode(65 + (i % 3))}`;
+      doctors.push({
+        name: `Dr. John Doe ${i}`,
+        photo: `https://randomuser.me/api/portraits/med/men/${i}.jpg`,
+        department: dept,
+        specialization: spec,
+        block: block,
+        room: `Room ${200 + i}`,
+        hours: "9:00 AM - 5:00 PM",
+        contact: `+91-98765${10000 + i}`,
+        qualifications: "MBBS, MD",
+        experience: `${5 + (i % 15)} years`,
+        languages: "English, Hindi",
+        bio: "Experienced and dedicated to patient care.",
+        status: status,
+      });
+    }
+
+    function renderDoctors(list) {
+      const grid = document.getElementById("doctorGrid");
+      grid.innerHTML = "";
+      list.forEach((doc) => {
+        const statusClass =
+          doc.status === "Available Now"
+            ? "available"
+            : doc.status === "In Surgery"
+            ? "surgery"
+            : "leave";
+        const card = `
+                <div class="doctor-card">
+                    <img src="${doc.photo}" alt="${doc.name}">
+                    <h4>${doc.name}</h4>
+                    <div class="status ${statusClass}">${doc.status}</div>
+                    <p><strong>Department:</strong> ${doc.department}</p>
+                    <p><strong>Specialization:</strong> ${doc.specialization}</p>
+                    <p><strong>Location:</strong> ${doc.block}, ${doc.room}</p>
+                    <p><strong>Hours:</strong> ${doc.hours}</p>
+                    <p><strong>Contact:</strong> ${doc.contact}</p>
+                    <p><strong>Experience:</strong> ${doc.experience}</p>
+                    <p><strong>Languages:</strong> ${doc.languages}</p>
+                    <p>${doc.bio}</p>
+                    <button class="book-btn">Book Appointment</button>
+                </div>
+            `;
+        grid.innerHTML += card;
+      });
+    }
+
+    document.getElementById("search").addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase();
+      filterDoctors(term, null, null);
+    });
+
+    document
+      .getElementById("specializationFilter")
+      .addEventListener("change", (e) => {
+        filterDoctors(null, e.target.value, null);
+      });
+
+    document.getElementById("availabilityFilter").addEventListener("change", (e) => {
+      filterDoctors(null, null, e.target.value);
+    });
+
+    function filterDoctors(nameTerm, specTerm, availTerm) {
+      nameTerm =
+        nameTerm !== null
+          ? nameTerm
+          : document.getElementById("search").value.toLowerCase();
+      specTerm =
+        specTerm !== null
+          ? specTerm
+          : document.getElementById("specializationFilter").value;
+      availTerm =
+        availTerm !== null
+          ? availTerm
+          : document.getElementById("availabilityFilter").value;
+
+      const filtered = doctors.filter((doc) => {
+        const matchesName = doc.name.toLowerCase().includes(nameTerm);
+        const matchesSpec = specTerm === "" || doc.specialization === specTerm;
+        const matchesAvail = availTerm === "" || doc.status === availTerm;
+        return matchesName && matchesSpec && matchesAvail;
+      });
+
+      renderDoctors(filtered);
+    }
+
+    // Initial render
+    renderDoctors(doctors);
+  </script>
+
+  <!-- ===== Footer ===== -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-about">
+        <h3>About CityCare Hospital</h3>
+        <p>
+          CityCare Hospital is dedicated to providing world-class healthcare
+          services with compassion and excellence. Our experienced doctors and
+          modern facilities ensure the best patient care.
+        </p>
+      </div>
+      <div class="footer-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="home.html">Home</a></li>
+          <li><a href="appointment.html">Appointment</a></li>
+          <li><a href="doctorlogin.html">Doctor Login</a></li>
+          <li><a href="feedback.html">Feedback</a></li>
+          <li><a href="signup.html">Sign Up</a></li>
+        </ul>
+      </div>
+      <div class="footer-map">
+        <h3>Location</h3>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15536.895128012804!2d79.1825982018976!3d21.246503599999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4c0cfaee66b91%3A0x1faab72e0461ca6e!2sNagpur%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1691550243076!5m2!1sen!2sin"
+          width="100%"
+          height="200"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+      <div class="footer-blog">
+        <h3>Latest Blog</h3>
+        <ul>
+          <li><a href="#">5 Tips for a Healthy Lifestyle</a></li>
+          <li><a href="#">How to Prepare for Your Surgery</a></li>
+          <li><a href="#">Understanding Health Insurance</a></li>
+        </ul>
+      </div>
+      <div class="footer-awards">
+        <h3>Awards & Recognition</h3>
+        <div class="award-logos">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/ISO_9001_Logo.svg/120px-ISO_9001_Logo.svg.png"
+            alt="ISO 9001"
+          />
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/JCI_Logo.svg/120px-JCI_Logo.svg.png"
+            alt="JCI Accredited"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-social">
+      <h3>Follow Us</h3>
+      <ul>
+        <li><a href="#">Facebook</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-bottom">&copy; 2025 CityCare Hospital. All rights reserved.</div>
+  </footer>
+</body>
+</html>
